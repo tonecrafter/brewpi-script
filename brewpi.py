@@ -773,14 +773,23 @@ while run:
                     #write csv file too
                     csvFile = open(localCsvFileName, "a")
                     try:
-                        lineToWrite = (time.strftime("%b %d %Y %H:%M:%S;") +
-                                       str(newRow['BeerTemp']) + ';' +
-                                       str(newRow['BeerSet']) + ';' +
-                                       str(newRow['BeerAnn']) + ';' +
-                                       str(newRow['FridgeTemp']) + ';' +
-                                       str(newRow['FridgeSet']) + ';' +
-                                       str(newRow['FridgeAnn']) + ';' +
-                                       str(newRow['State']) + ';' +
+                        #is this a new csv file?
+                        #opened with append so is at the end of the file. If tell returns 0 there is no data in the file (new file)
+                        if csvFile.tell() == 0:                            
+                            #add header
+                            lineToWrite = 'DateTime,BeerTemp,BeerSet,BeerAnn,FridgeTemp,FridgeSet,FridgeAnn,State,RoomTemp\n'
+                            csvFile.write(lineToWrite)
+                    except KeyError, e:
+                        logMessage("KeyError in line from controller: %s" % str(e))
+                    try:
+                        lineToWrite = (time.strftime("%b %d %Y %H:%M:%S,") +
+                                       str(newRow['BeerTemp']) + ',' +
+                                       str(newRow['BeerSet']) + ',' +
+                                       str(newRow['BeerAnn']) + ',' +
+                                       str(newRow['FridgeTemp']) + ',' +
+                                       str(newRow['FridgeSet']) + ',' +
+                                       str(newRow['FridgeAnn']) + ',' +
+                                       str(newRow['State']) + ',' +
                                        str(newRow['RoomTemp']) + '\n')
                         csvFile.write(lineToWrite)
                     except KeyError, e:
